@@ -14,6 +14,8 @@ describe("Layout", () => {
 
     expect(screen.getByTestId("route-shell")).toHaveClass("route-shell", "route-transition");
     expect(document.querySelector(".site-shell")).toHaveAttribute("data-theme", "monochrome-navy");
+    expect(screen.queryByTestId("site-quick-actions")).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: /quick inquiry/i })).not.toBeInTheDocument();
   });
 
   it("reveals scroll-animated sections with fallback when observer is unavailable", async () => {

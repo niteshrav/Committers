@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Footer from "./Footer";
 import { ROUTES } from "../lib/routes";
+import { buildWhatsAppUrl } from "../lib/siteContact";
 
 describe("Footer", () => {
   it("shows COMMITERS, tagline without the vision tagline, and copyright with inline nav", () => {
@@ -24,5 +25,10 @@ describe("Footer", () => {
     expect(screen.getByRole("link", { name: /^Contact$/i })).toHaveAttribute("href", ROUTES.contact);
     expect(screen.getByRole("link", { name: /^Privacy$/i })).toHaveAttribute("href", ROUTES.privacyPolicy);
     expect(screen.getByRole("link", { name: /^Terms$/i })).toHaveAttribute("href", ROUTES.terms);
+
+    const wa = screen.getByRole("link", { name: /^WhatsApp$/i });
+    expect(wa).toHaveAttribute("href", buildWhatsAppUrl());
+    expect(wa).toHaveAttribute("target", "_blank");
+    expect(wa).toHaveAttribute("rel", "noopener noreferrer");
   });
 });

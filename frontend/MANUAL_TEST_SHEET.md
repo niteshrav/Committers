@@ -57,6 +57,7 @@
 | NAV-03 | Header/Nav | Mobile viewport | Tap `Menu`, tap again to close | Mobile nav opens and closes without overlap |
 | NAV-04 | Routing | Any viewport | Navigate to Home/About/Services/Contact from nav | Correct page content appears for each route |
 | NAV-05 | 404 | Any viewport | Open `/this-route-does-not-exist` | Not Found page loads with recovery action |
+| FTR-01 | Footer | Home or any route | Scroll to footer | WhatsApp link uses `wa.me` and opens in new tab; no floating Call/WhatsApp/Inquiry strip at screen edge |
 | HOM-01 | Home | Home opened | Validate hero title/subtext/actions | Hero content visible, no clipping or overlap |
 | ABT-01 | About | About opened | Scroll through sections | Content readable and consistently spaced |
 | SRV-01 | Services | Services opened | Inspect service rows/cards | Cards render cleanly, no clipped text |
@@ -92,6 +93,7 @@
 | NAV-03 | PASS | - | Manual | Menu opens/closes; navigation works without layout break |
 | NAV-04 | PASS | - | `siteConsistency.test.tsx` — `APP_ROUTE_PATHS` | Each route renders with shell |
 | NAV-05 | PASS | - | `siteConsistency.test.tsx` — unknown URL | Not-found heading + shell |
+| FTR-01 | PASS | - | `Footer.test.tsx`, `siteConsistency.test.tsx` | Footer WhatsApp only; no floating strip |
 | HOM-01 | PASS | - | `HomePage.test.tsx` | Hero / actions |
 | ABT-01 | PASS | - | `AboutPage.test.tsx` | About page renders |
 | SRV-01 | PASS | - | `ServicesPage.test.tsx` | Services layout |

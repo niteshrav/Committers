@@ -46,6 +46,17 @@ describe("Site-wide consistency", () => {
     expect(document.title).toBe(expectedTitle(path));
   });
 
+  it("does not render floating quick-contact chrome (credibility-focused layout)", () => {
+    render(
+      <MemoryRouter initialEntries={[ROUTES.home]}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByTestId("site-quick-actions")).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog", { name: /quick inquiry/i })).not.toBeInTheDocument();
+  });
+
   it("maps unknown URLs to the not-found experience with the same shell and title", () => {
     render(
       <MemoryRouter initialEntries={["/does-not-exist-yet"]}>

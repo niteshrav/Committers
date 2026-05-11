@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../lib/routes";
+import { buildWhatsAppUrl } from "../lib/siteContact";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -21,6 +22,13 @@ export default function Footer() {
           <Link to={ROUTES.contact}>Contact</Link>
           <Link to={ROUTES.privacyPolicy}>Privacy</Link>
           <Link to={ROUTES.terms}>Terms</Link>
+          <a
+            href={buildWhatsAppUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp
+          </a>
         </nav>
       </div>
     </footer>
