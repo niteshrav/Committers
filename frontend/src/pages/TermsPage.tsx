@@ -1,8 +1,9 @@
 import React from "react";
 import PageHeroImmersive from "../components/PageHeroImmersive";
+import SectionFigure from "../components/SectionFigure";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { pageTitle } from "../lib/siteMeta";
-import { COMMITERS_EMAIL_STRIP_DISPLAY, buildMailtoTeamInboxHref } from "../lib/siteContact";
+import { COMMITERS_EMAIL_LEGAL_DISPLAY, buildMailtoTeamInboxHref } from "../lib/siteContact";
 
 export default function TermsPage() {
   useDocumentTitle(pageTitle("Terms of Service"));
@@ -17,6 +18,9 @@ export default function TermsPage() {
       </PageHeroImmersive>
 
       <section className="section">
+        <div className="section-figure-host section-figure-host--legal">
+          <SectionFigure pattern="wave" />
+        </div>
         <div className="card">
           <p className="muted">
             Welcome to Commiters (<strong>www.commiters.com</strong>), operated by Commiters Softwares.
@@ -66,7 +70,7 @@ export default function TermsPage() {
           <h2 className="legal-heading">Contact</h2>
           <p className="muted">
             For questions related to these terms, email{" "}
-            <a href={buildMailtoTeamInboxHref()}>{COMMITERS_EMAIL_STRIP_DISPLAY}</a>.
+            <a href={buildMailtoTeamInboxHref()}>{COMMITERS_EMAIL_LEGAL_DISPLAY}</a>.
           </p>
         </div>
       </section>

@@ -72,7 +72,7 @@ describe("API", () => {
       name: "Nitesh",
       email: "hello@example.com",
       serviceNeeded: "Website Development",
-      budgetRange: "50,000",
+      budgetRange: "$5,000 – $15,000",
       timeline: "2-4 weeks",
       referenceLinks: "https://example.com",
       message: "Need a modern business website.",
@@ -85,6 +85,27 @@ describe("API", () => {
     expect(mocks.createMock).toHaveBeenCalledTimes(1);
   });
 
+  it("creates lead when service is Automation Tools", async () => {
+    const app = createApp();
+    const payload = {
+      name: "Nitesh",
+      email: "hello@example.com",
+      serviceNeeded: "Automation Tools",
+      budgetRange: "",
+      timeline: "4 weeks",
+      message: "Need workflow automation.",
+    };
+
+    const res = await request(app).post("/api/leads").set("Content-Type", "application/json").send(payload);
+
+    expect(res.status).toBe(201);
+    expect(mocks.createMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ serviceNeeded: "AUTOMATION_TOOLS" }),
+      }),
+    );
+  });
+
   it("returns 503 when lead persistence is unavailable", async () => {
     const app = createApp();
     mocks.createMock.mockRejectedValue(new Error("DATABASE_URL resolved to an empty string"));
@@ -92,7 +113,7 @@ describe("API", () => {
       name: "Nitesh",
       email: "hello@example.com",
       serviceNeeded: "Website Development",
-      budgetRange: "50,000",
+      budgetRange: "$5,000 – $15,000",
       timeline: "2-4 weeks",
       referenceLinks: "https://example.com",
       message: "Need a modern business website.",
@@ -112,7 +133,7 @@ describe("API", () => {
       name: "John123",
       email: "hello@example.com",
       serviceNeeded: "Website Development",
-      budgetRange: "50,000",
+      budgetRange: "$5,000 – $15,000",
       timeline: "2-4 weeks",
       message: "Hello.",
     };

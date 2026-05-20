@@ -11,6 +11,7 @@ describe("PrivacyPolicyPage", () => {
     );
 
     expect(screen.getByTestId("page-hero-premium")).toBeInTheDocument();
+    expect(screen.getByTestId("section-figure-wave")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^Privacy Policy$/i })).toBeInTheDocument();
     expect(container.querySelectorAll(".legal-heading").length).toBeGreaterThan(0);
 

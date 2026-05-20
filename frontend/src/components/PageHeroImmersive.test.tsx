@@ -14,6 +14,7 @@ describe("PageHeroImmersive", () => {
 
     const shell = screen.getByTestId("page-hero-premium");
     expect(shell).toHaveClass("premium-hero", "premium-hero--immersive", "hero-centered");
+    expect(screen.getByTestId("premium-hero-backdrop")).toHaveClass("premium-hero-backdrop");
     expect(shell.querySelector(".premium-hero-glass--page")).toBeTruthy();
     expect(screen.getByRole("heading", { name: /Page Title/i })).toBeInTheDocument();
   });

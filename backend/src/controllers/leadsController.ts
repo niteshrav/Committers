@@ -1,5 +1,7 @@
+import type { LeadServiceNeeded } from "@prisma/client";
 import { Request, Response } from "express";
 import { z } from "zod";
+import { LEAD_BUDGET_RANGE_VALUES } from "../lib/budgetRanges";
 import { prisma } from "../prismaClient";
 
 const leadSchema = z.object({
@@ -14,15 +16,13 @@ const leadSchema = z.object({
     "Web Application Development",
     "Mobile App Development",
     "MVP Development",
+    "Automation Tools",
+    "AI Integration",
   ]),
   budgetRange: z.union([
     z.undefined(),
     z.literal(""),
-    z
-      .string()
-      .max(60)
-      .regex(/^[\d,]+$/, "Budget must use digits and commas only.")
-      .refine((val) => /\d/.test(val), { message: "Budget must include at least one digit." }),
+    z.enum(LEAD_BUDGET_RANGE_VALUES as unknown as [string, ...string[]]),
   ]),
   timeline: z
     .string()
@@ -46,6 +46,8 @@ export async function createLead(req: Request, res: Response) {
     "Web Application Development": "WEB_APPLICATION_DEVELOPMENT",
     "Mobile App Development": "MOBILE_APP_DEVELOPMENT",
     "MVP Development": "MVP_DEVELOPMENT",
+    "Automation Tools": "AUTOMATION_TOOLS",
+    "AI Integration": "AI_INTEGRATION",
   } as const;
 
   try {
@@ -53,8 +55,8 @@ export async function createLead(req: Request, res: Response) {
       data: {
         name: data.name,
         email: data.email,
-        serviceNeeded: serviceNeededMap[data.serviceNeeded],
-        budgetRange: data.budgetRange ? (data.budgetRange === "" ? null : data.budgetRange) : null,
+        serviceNeeded: serviceNeededMap[data.serviceNeeded] as LeadServiceNeeded,
+        budgetRange: data.budgetRange && data.budgetRange.length > 0 ? data.budgetRange : null,
         timeline: data.timeline,
         referenceLinks: data.referenceLinks
           ? data.referenceLinks === ""

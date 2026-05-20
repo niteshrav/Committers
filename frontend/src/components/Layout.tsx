@@ -7,16 +7,30 @@ export default function Layout({ children }: PropsWithChildren) {
   const location = useLocation();
 
   useEffect(() => {
-    if (navigator.userAgent.toLowerCase().includes("jsdom")) {
-      return;
-    }
+    const hash = location.hash.replace(/^#/, "");
 
-    try {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch {
-      window.scrollTo(0, 0);
+    const runScroll = () => {
+      if (hash) {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (navigator.userAgent.toLowerCase().includes("jsdom")) {
+        return;
+      }
+      try {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch {
+        window.scrollTo(0, 0);
+      }
+    };
+
+    if (hash) {
+      const id = window.setTimeout(runScroll, 80);
+      return () => clearTimeout(id);
     }
-  }, [location.pathname]);
+    runScroll();
+    return undefined;
+  }, [location.pathname, location.hash]);
 
   useEffect(() => {
     const revealElements = Array.from(document.querySelectorAll<HTMLElement>(".reveal-on-scroll"));

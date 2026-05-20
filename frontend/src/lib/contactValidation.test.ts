@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  sanitizeBudgetInput,
   sanitizeNameInput,
   sanitizeTimelineInput,
   validateBudgetOptional,
@@ -53,30 +52,22 @@ describe("contactValidation", () => {
     });
   });
 
-  describe("sanitizeBudgetInput", () => {
-    it("keeps only digits and commas", () => {
-      expect(sanitizeBudgetInput("50,000 INR")).toBe("50,000");
-      expect(sanitizeBudgetInput("abc12,34def")).toBe("12,34");
-    });
-  });
-
   describe("validateBudgetOptional", () => {
     it("allows empty optional budget", () => {
       expect(validateBudgetOptional("")).toBeNull();
       expect(validateBudgetOptional("   ")).toBeNull();
     });
 
-    it("allows comma-separated digits only", () => {
-      expect(validateBudgetOptional("50,000")).toBeNull();
-      expect(validateBudgetOptional("1,50,000")).toBeNull();
+    it("allows known USD tier labels", () => {
+      expect(validateBudgetOptional("Under $1,000")).toBeNull();
+      expect(validateBudgetOptional("$1,000 – $5,000")).toBeNull();
+      expect(validateBudgetOptional("$50,000+")).toBeNull();
+      expect(validateBudgetOptional("Not sure yet")).toBeNull();
     });
 
-    it("rejects letters or symbols", () => {
-      expect(validateBudgetOptional("50k")).toMatch(/digits and commas/i);
-    });
-
-    it("rejects comma-only input", () => {
-      expect(validateBudgetOptional(",,,")).toMatch(/digit/i);
+    it("rejects values outside the allowed set", () => {
+      expect(validateBudgetOptional("50,000")).toMatch(/valid budget range/i);
+      expect(validateBudgetOptional("$999")).toMatch(/valid budget range/i);
     });
   });
 

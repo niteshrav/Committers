@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 import { DEFAULT_DOCUMENT_TITLE, SITE_NAME, pageTitle } from "./siteMeta";
 
 describe("siteMeta", () => {
+  it("uses title-case brand spelling aligned with header/footer wordmark", () => {
+    expect(SITE_NAME).toBe("Commiters");
+  });
+
   it("builds segment titles with the site name suffix", () => {
     expect(pageTitle("About")).toBe(`About | ${SITE_NAME}`);
     expect(pageTitle("Services")).toBe(`Services | ${SITE_NAME}`);

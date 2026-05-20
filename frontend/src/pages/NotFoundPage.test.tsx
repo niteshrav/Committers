@@ -11,6 +11,7 @@ describe("NotFoundPage", () => {
     );
 
     expect(screen.getByTestId("page-hero-premium")).toBeInTheDocument();
+    expect(screen.getByTestId("section-figure-constellation")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Page not found/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Go to Home/i })).toHaveAttribute("href", "/");
   });

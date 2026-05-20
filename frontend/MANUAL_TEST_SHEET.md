@@ -52,7 +52,7 @@
 | ID | Module | Preconditions | Steps | Expected Result |
 |---|---|---|---|---|
 | ENV-01 | Environment | App servers started | Open `http://localhost:4000/api/health` | JSON response contains `ok: true` |
-| NAV-01 | Header/Nav | Home page opened | Verify brand + primary links on desktop | `COMMITERS`, Home, About, Services, Contact are visible/clickable |
+| NAV-01 | Header/Nav | Home page opened | Verify brand + primary links on desktop | `Commiters`, Home, About, Services, Contact are visible/clickable |
 | NAV-02 | Header/Nav | Mobile viewport | Verify menu button and hidden desktop nav | Menu button visible; desktop inline nav hidden |
 | NAV-03 | Header/Nav | Mobile viewport | Tap `Menu`, tap again to close | Mobile nav opens and closes without overlap |
 | NAV-04 | Routing | Any viewport | Navigate to Home/About/Services/Contact from nav | Correct page content appears for each route |

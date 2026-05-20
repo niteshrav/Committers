@@ -1,0 +1,3 @@
+-- AlterEnum
+ALTER TYPE "LeadServiceNeeded" ADD VALUE 'AUTOMATION_TOOLS';
+ALTER TYPE "LeadServiceNeeded" ADD VALUE 'AI_INTEGRATION';

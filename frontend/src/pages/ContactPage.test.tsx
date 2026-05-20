@@ -8,6 +8,8 @@ import {
   buildOfficeMapEmbedUrl,
   buildOfficeMapOpenUrl,
 } from "../lib/officeMap";
+import { buildMailtoPrimaryHref, buildTelHref, COMMITERS_PHONE_DISPLAY } from "../lib/siteContact";
+import { SITE_CALENDLY_URL } from "../lib/siteLinks";
 
 const navigateMock = vi.fn();
 
@@ -38,37 +40,70 @@ describe("ContactPage", () => {
     );
 
     expect(screen.getByTestId("page-hero-premium")).toHaveClass("premium-hero", "premium-hero--immersive");
-    expect(screen.getByRole("heading", { name: /Contact/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Build Something Together/i })).toBeInTheDocument();
+    expect(screen.getByText(/Every message is read by Nitesh personally/i)).toBeInTheDocument();
+    expect(within(screen.getByTestId("contact-layout")).getByTestId("section-figure-wave")).toBeInTheDocument();
   });
 
-  it("prioritizes the inquiry form with a refined layout shell", () => {
+  it("exposes project inquiry anchor for navbar deep links", () => {
     render(
       <MemoryRouter>
         <ContactPage />
       </MemoryRouter>,
     );
 
-    const send = screen.getByRole("button", { name: /Send Message/i });
+    const anchor = document.getElementById("project-inquiry");
+    expect(anchor).toBeTruthy();
+    expect(anchor?.querySelector('form[aria-label="Contact form"]')).toBeTruthy();
+  });
+
+  it("prioritizes the inquiry form with quick routes and follow-up blocks", () => {
+    render(
+      <MemoryRouter>
+      <ContactPage />
+      </MemoryRouter>,
+    );
+
+    const send = screen.getByRole("button", { name: /Send — we'll reply within 4 hours/i });
     expect(send).toBeInTheDocument();
     expect(send).toHaveClass("btn", "btn-minimal", "btn-minimal--solid");
     expect(send.closest(".form-actions")).toHaveClass("form-actions", "form-actions--start");
     expect(screen.getByTestId("contact-layout")).toHaveClass("contact-page-stack", "mobile-safe-layout");
-    expect(screen.queryByTestId("project-fit-checklist")).not.toBeInTheDocument();
-    expect(screen.queryByText(/Response within 24 hours/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Business goals and expected outcome/i)).not.toBeInTheDocument();
+    expect(screen.getByTestId("contact-quick-preface")).toHaveTextContent(/Prefer a faster route/i);
+    expect(screen.getByTestId("contact-quick-routes")).toBeInTheDocument();
+    expect(screen.getByTestId("contact-next-steps")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /What happens after you send this/i })).toBeInTheDocument();
+    expect(screen.getByText(/No automated responses\. No sales team/i)).toBeInTheDocument();
+    expect(screen.getByTestId("contact-timezone")).toBeInTheDocument();
+    expect(screen.getByText(/6:00 PM – 11:00 PM IST/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Tell us about your project/i })).toBeInTheDocument();
   });
 
-  it("captures structured lead fields aligned with INR budget labelling", () => {
+  it("captures structured lead fields aligned with USD budget tiers", () => {
     render(
       <MemoryRouter>
         <ContactPage />
       </MemoryRouter>,
     );
 
-    expect(screen.getByLabelText(/^Service$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Budget range \(₹\)/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^Timeline$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^Reference Links$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^What do you need\?$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Approximate budget \(USD\)$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Ideal timeline$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^References or links$/i)).toBeInTheDocument();
+  });
+
+  it("includes automation and AI integration in the service dropdown", () => {
+    render(
+      <MemoryRouter>
+        <ContactPage />
+      </MemoryRouter>,
+    );
+
+    const select = screen.getByLabelText(/^What do you need\?$/i) as HTMLSelectElement;
+    const labels = Array.from(select.querySelectorAll("option")).map((o) => o.textContent?.trim());
+    expect(labels).toContain("Automation Tools");
+    expect(labels).toContain("AI Integration");
+    expect(labels).toHaveLength(6);
   });
 
   it("does not show inline helper lines under Name, Budget, or Timeline", () => {
@@ -79,11 +114,29 @@ describe("ContactPage", () => {
     );
 
     expect(screen.queryByText(/Letters only — spaces, hyphens, and apostrophes are ok/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Digits and commas only — e\.g\. 50,000 or 1,50,000/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Digits and commas only/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Letters, numbers, spaces, and hyphens — e\.g\. 4-8 weeks/i)).not.toBeInTheDocument();
   });
 
-  it("anchors phone, email, and address with icons on the left; map alone on the right", () => {
+  it("anchors WhatsApp and Calendly as fast paths above the form", () => {
+    render(
+      <MemoryRouter>
+        <ContactPage />
+      </MemoryRouter>,
+    );
+
+    const quick = screen.getByTestId("contact-quick-routes");
+    expect(within(quick).getByRole("link", { name: /Chat on WhatsApp/i })).toHaveAttribute(
+      "href",
+      expect.stringContaining("https://wa.me/"),
+    );
+    expect(within(quick).getByRole("link", { name: /Book a 20-Min Call/i })).toHaveAttribute(
+      "href",
+      SITE_CALENDLY_URL,
+    );
+  });
+
+  it("anchors phone, primary email, LinkedIn, GitHub, and address; map on the right", () => {
     render(
       <MemoryRouter>
         <ContactPage />
@@ -95,16 +148,18 @@ describe("ContactPage", () => {
     expect(screen.getByTestId("contact-bottom-right")).toBeInTheDocument();
     const strip = screen.getByTestId("contact-strip");
     expect(strip).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /WhatsApp/i })).not.toBeInTheDocument();
     expect(within(strip).queryByText(/^Email$/i)).not.toBeInTheDocument();
     expect(within(strip).queryByText(/^Phone$/i)).not.toBeInTheDocument();
-    expect(within(strip).queryByText(/^Studio$/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /\+91 7891646568/i })).toHaveAttribute("href", "tel:+917891646568");
-    expect(
-      screen.getByRole("link", {
-        name: /hello@commiters\.com,\s*commitersudaipur@gmail\.com/i,
-      }),
-    ).toHaveAttribute("href", "mailto:hello@commiters.com,commitersudaipur@gmail.com");
+    expect(screen.getByRole("link", { name: COMMITERS_PHONE_DISPLAY })).toHaveAttribute("href", buildTelHref());
+    expect(screen.getByRole("link", { name: /^hello@commiters\.com$/i })).toHaveAttribute("href", buildMailtoPrimaryHref());
+    expect(screen.getByRole("link", { name: /linkedin\.com\/in\/niteshrav/i })).toHaveAttribute(
+      "href",
+      expect.stringContaining("linkedin.com"),
+    );
+    expect(screen.getByRole("link", { name: /github\.com\/niteshrav/i })).toHaveAttribute(
+      "href",
+      expect.stringContaining("github.com"),
+    );
     expect(screen.getByTitle(/office location map/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open in Google Maps/i })).toBeInTheDocument();
     expect(screen.getByText(/82, Sobhagya Nagar, Nakoda Nagar, Udaipur, Rajasthan, India 313001/i)).toBeInTheDocument();
@@ -165,13 +220,13 @@ describe("ContactPage", () => {
       </MemoryRouter>,
     );
 
-    const name = screen.getByLabelText(/^Name$/i);
+    const name = screen.getByLabelText(/^Full name$/i);
     await user.clear(name);
     await user.type(name, "Jane123 Doe@");
     expect(name).toHaveValue("Jane Doe");
   });
 
-  it("sanitizes budget input to digits and commas (₹-style amounts)", async () => {
+  it("sets budget from the USD tier select", async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -179,9 +234,9 @@ describe("ContactPage", () => {
       </MemoryRouter>,
     );
 
-    const budget = screen.getByLabelText(/Budget range \(₹\)/i);
-    await user.type(budget, "₹50k and change");
-    expect(budget).toHaveValue("50");
+    const budget = screen.getByLabelText(/^Approximate budget \(USD\)$/i);
+    await user.selectOptions(budget, "$5,000 – $15,000");
+    expect(budget).toHaveValue("$5,000 – $15,000");
   });
 
   it("sanitizes timeline input to letters, numbers, spaces, and hyphens", async () => {
@@ -192,12 +247,12 @@ describe("ContactPage", () => {
       </MemoryRouter>,
     );
 
-    const timeline = screen.getByLabelText(/^Timeline$/i);
+    const timeline = screen.getByLabelText(/^Ideal timeline$/i);
     await user.type(timeline, "4@8 weeks!!!");
     expect(timeline).toHaveValue("48 weeks");
   });
 
-  it("blocks submit when budget is comma-only", async () => {
+  it("submits a valid inquiry with optional budget empty and navigates to thank-you", async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -205,44 +260,46 @@ describe("ContactPage", () => {
       </MemoryRouter>,
     );
 
-    await user.type(screen.getByLabelText(/^Name$/i), "Nitesh Rav");
-    await user.type(screen.getByLabelText(/^Email$/i), "hello@example.com");
-    await user.type(screen.getByLabelText(/Budget range \(₹\)/i), ",,,");
-    await user.type(screen.getByLabelText(/^Message$/i), "Need a site.");
+    await user.type(screen.getByLabelText(/^Full name$/i), "Nitesh Rav");
+    await user.type(screen.getByLabelText(/^Work email$/i), "hello@example.com");
+    await user.type(screen.getByLabelText(/^Ideal timeline$/i), "4-8 weeks");
+    await user.type(screen.getByLabelText(/^Project overview$/i), "Need a modern website.");
 
-    await user.click(screen.getByRole("button", { name: /Send Message/i }));
-
-    expect(screen.getByRole("alert")).toHaveTextContent(/digit/i);
-    expect(vi.mocked(createLead)).not.toHaveBeenCalled();
-    expect(navigateMock).not.toHaveBeenCalled();
-  });
-
-  it("submits a valid inquiry and navigates to thank-you", async () => {
-    const user = userEvent.setup();
-    render(
-      <MemoryRouter>
-        <ContactPage />
-      </MemoryRouter>,
-    );
-
-    await user.type(screen.getByLabelText(/^Name$/i), "Nitesh Rav");
-    await user.type(screen.getByLabelText(/^Email$/i), "hello@example.com");
-    await user.type(screen.getByLabelText(/Budget range \(₹\)/i), "50,000");
-    await user.type(screen.getByLabelText(/^Timeline$/i), "4-8 weeks");
-    await user.type(screen.getByLabelText(/^Message$/i), "Need a modern website.");
-
-    await user.click(screen.getByRole("button", { name: /Send Message/i }));
+    await user.click(screen.getByRole("button", { name: /Send — we'll reply within 4 hours/i }));
 
     expect(vi.mocked(createLead)).toHaveBeenCalledTimes(1);
     expect(vi.mocked(createLead)).toHaveBeenCalledWith({
       name: "Nitesh Rav",
       email: "hello@example.com",
       serviceNeeded: "Website Development",
-      budgetRange: "50,000",
+      budgetRange: undefined,
       timeline: "4-8 weeks",
       referenceLinks: undefined,
       message: "Need a modern website.",
     });
+    expect(navigateMock).toHaveBeenCalledWith("/thank-you");
+  });
+
+  it("submits with a selected USD tier", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <ContactPage />
+      </MemoryRouter>,
+    );
+
+    await user.type(screen.getByLabelText(/^Full name$/i), "Nitesh Rav");
+    await user.type(screen.getByLabelText(/^Work email$/i), "hello@example.com");
+    await user.selectOptions(screen.getByLabelText(/^Approximate budget \(USD\)$/i), "$5,000 – $15,000");
+    await user.type(screen.getByLabelText(/^Project overview$/i), "Need a modern website.");
+
+    await user.click(screen.getByRole("button", { name: /Send — we'll reply within 4 hours/i }));
+
+    expect(vi.mocked(createLead)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        budgetRange: "$5,000 – $15,000",
+      }),
+    );
     expect(navigateMock).toHaveBeenCalledWith("/thank-you");
   });
 });

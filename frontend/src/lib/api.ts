@@ -5,7 +5,9 @@ export type LeadInput = {
     | "Website Development"
     | "Web Application Development"
     | "Mobile App Development"
-    | "MVP Development";
+    | "MVP Development"
+    | "Automation Tools"
+    | "AI Integration";
   budgetRange?: string;
   timeline?: string;
   referenceLinks?: string;

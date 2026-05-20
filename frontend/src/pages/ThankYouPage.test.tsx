@@ -12,6 +12,7 @@ describe("ThankYouPage", () => {
     );
 
     expect(screen.getByTestId("page-hero-premium")).toBeInTheDocument();
+    expect(screen.getByTestId("section-figure-wave")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Thank you for reaching out/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Back to Home/i })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: /^Contact$/i })).toHaveAttribute("href", ROUTES.contact);

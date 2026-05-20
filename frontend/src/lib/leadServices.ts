@@ -4,6 +4,8 @@ export const LEAD_SERVICE_LABELS = [
   "Web Application Development",
   "Mobile App Development",
   "MVP Development",
+  "Automation Tools",
+  "AI Integration",
 ] as const;
 
 export type LeadServiceLabel = (typeof LEAD_SERVICE_LABELS)[number];

@@ -1,8 +1,9 @@
 import React from "react";
 import PageHeroImmersive from "../components/PageHeroImmersive";
+import SectionFigure from "../components/SectionFigure";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { pageTitle } from "../lib/siteMeta";
-import { COMMITERS_EMAIL_STRIP_DISPLAY, buildMailtoTeamInboxHref } from "../lib/siteContact";
+import { COMMITERS_EMAIL_LEGAL_DISPLAY, buildMailtoTeamInboxHref } from "../lib/siteContact";
 
 export default function PrivacyPolicyPage() {
   useDocumentTitle(pageTitle("Privacy Policy"));
@@ -17,6 +18,9 @@ export default function PrivacyPolicyPage() {
       </PageHeroImmersive>
 
       <section className="section">
+        <div className="section-figure-host section-figure-host--legal">
+          <SectionFigure pattern="wave" />
+        </div>
         <div className="card">
           <p className="muted">
             Commiters Softwares ("Commiters", "we", "our", "us") values your privacy. This
@@ -53,7 +57,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="legal-heading">Your Rights</h2>
           <p className="muted">
             You may request access, correction, or deletion of your personal data by emailing{" "}
-            <a href={buildMailtoTeamInboxHref()}>{COMMITERS_EMAIL_STRIP_DISPLAY}</a>.
+            <a href={buildMailtoTeamInboxHref()}>{COMMITERS_EMAIL_LEGAL_DISPLAY}</a>.
           </p>
 
           <h2 className="legal-heading">Security</h2>
@@ -69,7 +73,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="legal-heading">Contact</h2>
           <p className="muted">
             For privacy-related questions, contact{" "}
-            <a href={buildMailtoTeamInboxHref()}>{COMMITERS_EMAIL_STRIP_DISPLAY}</a>.
+            <a href={buildMailtoTeamInboxHref()}>{COMMITERS_EMAIL_LEGAL_DISPLAY}</a>.
           </p>
         </div>
       </section>

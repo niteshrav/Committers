@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PageHeroImmersive from "../components/PageHeroImmersive";
+import SectionFigure from "../components/SectionFigure";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { ROUTES } from "../lib/routes";
 import { pageTitle } from "../lib/siteMeta";
@@ -24,6 +25,9 @@ export default function ThankYouPage() {
           </Link>
         </div>
       </PageHeroImmersive>
+      <div className="section-figure-host section-figure-host--tight">
+        <SectionFigure pattern="wave" />
+      </div>
     </>
   );
 }
