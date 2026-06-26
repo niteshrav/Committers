@@ -41,12 +41,15 @@ describe("deployment configuration", () => {
 
   it("builds the backend API as a production Node image on port 4000", () => {
     const dockerfile = readRepoFile("backend/Dockerfile");
+    const packageJson = readRepoFile("backend/package.json");
 
     expect(dockerfile).toContain("FROM node:");
     expect(dockerfile).toMatch(/AS build/);
     expect(dockerfile).toContain("npm run build");
     expect(dockerfile).toContain('CMD ["node", "dist/index.js"]');
     expect(dockerfile).toContain("EXPOSE 4000");
+    expect(packageJson).toContain("esbuild src/index.ts");
+    expect(packageJson).toContain("--packages=external");
   });
 
   it("ignores local secrets and build artifacts in docker contexts", () => {
@@ -65,5 +68,17 @@ describe("deployment configuration", () => {
     const envExample = readRepoFile("frontend/.env.production.example");
 
     expect(envExample).toContain("VITE_API_BASE_URL=https://api.commiters.com");
+  });
+
+  it("documents production Gmail SMTP settings for Vikas handoff", () => {
+    const envExample = readRepoFile("backend/.env.production.example");
+
+    expect(envExample).toContain("NODE_ENV=production");
+    expect(envExample).toContain("SMTP_ENABLED=true");
+    expect(envExample).toContain("SMTP_HOST=smtp.gmail.com");
+    expect(envExample).toContain("SMTP_USER=commitersudaipur@gmail.com");
+    expect(envExample).toContain("CORS_ORIGIN=https://www.commiters.com");
+    expect(envExample).toContain("hello@commiters.com");
+    expect(envExample).toContain("commitersudaipur@gmail.com");
   });
 });

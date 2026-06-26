@@ -1,6 +1,9 @@
 import "dotenv/config";
 import { createApp } from "./app";
+import { assertProductionEmailDeliveryReady } from "./lib/smtpConfig";
 import { getServerHost } from "./serverBind";
+
+assertProductionEmailDeliveryReady();
 
 const port = Number(process.env.PORT ?? 4000);
 const host = getServerHost();
